@@ -1,9 +1,11 @@
 package ru.stellarburgers.nomoreparties.site.locators;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Selenide.$;
+import static java.time.Duration.ofSeconds;
 
 public class LoginPage {
 
@@ -45,6 +47,10 @@ public class LoginPage {
     // Метод клика по кнопке регистрации
     public void registerButtonClick() {
         registerButton.click();
+    }
+
+    public void waitForLoadLoginPage() {
+        forgotPasswordButton.shouldBe(Condition.visible, ofSeconds(2));
     }
 
     // Метод заполнения данных пользователя

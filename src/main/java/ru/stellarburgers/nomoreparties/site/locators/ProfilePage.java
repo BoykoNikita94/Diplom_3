@@ -8,7 +8,7 @@ import static com.codeborne.selenide.Selenide.$;
 public class ProfilePage {
 
     // Кнопка перехода в конструктор
-    private SelenideElement constructorButton = $(byClassName("AppHeader_header__link__3D_hX"));
+    private SelenideElement constructorButton = $(byXpath(".//a[@href='/']"));
 
     // Кнопка логотипа Stellar Burgers
     private SelenideElement logoButton = $(byClassName("AppHeader_header__logo__2D0X2"));

@@ -1,6 +1,7 @@
 package ru.stellarburgers.nomoreparties.site.locators;
 
 import com.codeborne.selenide.SelenideElement;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Selenide.$;
@@ -11,28 +12,21 @@ public class MainPage {
     public static final String URL = "https://stellarburgers.nomoreparties.site/";
 
     //Кнопка входа в личный кабинет
-    private SelenideElement personalAreaButton = $(byLinkText("Личный Кабинет"));
+    private SelenideElement personalAreaButton = $(byXpath(".//a[@href='/account']"));
 
     //Кнопка входа в аккаунт на главной странице
     private SelenideElement signInButton = $(byCssSelector("button[class='button_button__33qZ0 button_button_type_primary__1O7Bx button_button_size_large__G21Vg']"));
 
     //Вкладка ассортимента булок
-    private SelenideElement bunTab = $(byXpath("//*[@id=\"root\"]/div/main/section[1]/div[1]/div[1]/span"));
+    private SelenideElement bunTab = $(byCssSelector("section.BurgerIngredients_ingredients__1N8v2 div:nth-child(2) div:nth-child(1)"));
 
     //Вкладка ассортимента соусов
-    private SelenideElement sauceTab = $(byXpath("//*[@id=\"root\"]/div/main/section[1]/div[1]/div[2]/span"));
+    private SelenideElement sauceTab = $(byCssSelector("section.BurgerIngredients_ingredients__1N8v2 div:nth-child(2) div:nth-child(2)"));
 
     //Вкладка ассортимента начинок
-    private SelenideElement fillingTab = $(byXpath("//*[@id=\"root\"]/div/main/section[1]/div[1]/div[3]/span"));
+    private SelenideElement fillingTab = $(byCssSelector("section.BurgerIngredients_ingredients__1N8v2 div:nth-child(2) div:nth-child(3)"));
 
-    // Заголовок начинок
-    private SelenideElement fillingsHeader = $(byXpath("//*[@id=\"root\"]/div/main/section[1]/div[2]/h2[3]"));
-
-    // Заголовок соусов
-    private SelenideElement saucesHeader = $(byXpath("//*[@id=\"root\"]/div/main/section[1]/div[2]/h2[2]"));
-
-    // Заголовок булок
-    private SelenideElement bunsHeader = $(byXpath("//*[@id=\"root\"]/div/main/section[1]/div[2]/h2[1]"));
+    private SelenideElement selectedCategory = $(byCssSelector(".tab_tab__1SPyG.tab_tab_type_current__2BEPc.pt-4.pr-10.pb-4.pl-10.noselect"));
 
     //Метод клика по кнопке входа в личный кабинет
     public void personalAreaButtonClick() {
@@ -64,19 +58,23 @@ public class MainPage {
         fillingTab.click();
     }
 
+    public SelenideElement getSelectedCategory() {
+        return selectedCategory;
+    }
+
     // Метод получения заголовка начинок
-    public SelenideElement fillingsName() {
-        return fillingsHeader;
-    }
-
-    // Метод получения заголовка соусов
-    public SelenideElement saucesName() {
-        return saucesHeader;
-    }
-
-    // Метод получения заголовка булок
-    public SelenideElement bunsName() {
-        return bunsHeader;
-    }
+//    public SelenideElement fillingsName() {
+//        return fillingsHeader;
+//    }
+//
+//    // Метод получения заголовка соусов
+//    public SelenideElement saucesName() {
+//        return saucesHeader;
+//    }
+//
+//    // Метод получения заголовка булок
+//    public SelenideElement bunsName() {
+//        return bunsHeader;
+//    }
 
 }

@@ -1,6 +1,11 @@
+import api.client.UserClient;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import com.github.javafaker.Faker;
+import models.CreateUserRequest;
+import models.UserLoginRequest;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import ru.stellarburgers.nomoreparties.site.locators.*;
 
@@ -10,38 +15,47 @@ import static org.junit.Assert.assertTrue;
 
 public class AccountLoginTests {
 
+    private final MainPage mainPage = new MainPage();
+    private final LoginPage loginPage = new LoginPage();
+    private final RegisterPage registerPage = new RegisterPage();
+    private final ProfilePage profilePage = new ProfilePage();
+    private final ForgotPasswordPage forgotPasswordPage = new ForgotPasswordPage();
+    private final UserClient userClient = new UserClient();
+    private String email;
+    private String password;
+    private String name;
+
+    @Before
+    public void configuration() {
+        Configuration.startMaximized = true;
+
+        Faker faker = new Faker();
+        name = faker.name().firstName();
+        email = faker.name().firstName() + "@mail.ru";
+        password = faker.internet().password();
+
+        userClient.createUser(new CreateUserRequest(email, password, name));
+
+        Selenide.open(MainPage.URL);
+    }
+
+    @After
+    public void deleteUser() {
+        String token = userClient.userGetToken(new UserLoginRequest(email, password));
+        if (token != null && !token.equals("")) {
+            userClient.deleteUser(token);
+        }
+        Selenide.closeWebDriver();
+    }
+
     // Вход через кнопку в форме регистрации
     @Test
     public void loginThroughRegisterPageButtonShouldBeSuccess() {
         // Настройка запуска тестов в Яндекс.Браузере
 //        System.setProperty("webdriver.chrome.driver", "C:\\WebDriver\\bin\\yandexdriver.exe");
-        Configuration.startMaximized = true;
-        Selenide.open(MainPage.URL);
 
-        // Создаем объекты классов страниц
-        MainPage mainPage = new MainPage();
-        LoginPage loginPage = new LoginPage();
-        RegisterPage registerPage = new RegisterPage();
-        ProfilePage profilePage = new ProfilePage();
-
-        // Создаем тестового пользователя
-        Faker faker = new Faker();
-        String name = faker.name().firstName();
-        String email = faker.name().firstName() + "@mail.ru";
-        String password = faker.internet().password();
-
-        // Создаем нового пользователя
         mainPage.signInButtonClick();
-        loginPage.registerButtonClick();
-        registerPage.fillNewUserInfo(
-                name,
-                email,
-                password);
-        registerPage.registerButtonClick();
-        loginPage.registerButtonClick();
-        registerPage.signInButtonClick();
-
-        // Логинимся под новым пользователем
+        loginPage.waitForLoadLoginPage();
         loginPage.fillUserInfo(
                 email,
                 password);
@@ -69,34 +83,11 @@ public class AccountLoginTests {
     public void loginThroughForgotPasswordPageButtonShouldBeSuccess() {
         // Настройка запуска тестов в Яндекс.Браузере
 //        System.setProperty("webdriver.chrome.driver", "C:\\WebDriver\\bin\\yandexdriver.exe");
-        Configuration.startMaximized = true;
-        Selenide.open(MainPage.URL);
 
-        // Создаем объекты классов страниц
-        MainPage mainPage = new MainPage();
-        LoginPage loginPage = new LoginPage();
-        RegisterPage registerPage = new RegisterPage();
-        ProfilePage profilePage = new ProfilePage();
-        ForgotPasswordPage forgotPasswordPage = new ForgotPasswordPage();
-
-        // Создаем тестового пользователя
-        Faker faker = new Faker();
-        String name = faker.name().firstName();
-        String email = faker.name().firstName() + "@mail.ru";
-        String password = faker.internet().password();
-
-        // Создаем нового пользователя
         mainPage.signInButtonClick();
-        loginPage.registerButtonClick();
-        registerPage.fillNewUserInfo(
-                name,
-                email,
-                password);
-        registerPage.registerButtonClick();
         loginPage.forgotPasswordButtonClick();
         forgotPasswordPage.signInButtonClick();
-
-        // Логинимся под новым пользователем
+        loginPage.waitForLoadLoginPage();
         loginPage.fillUserInfo(
                 email,
                 password);
@@ -117,7 +108,5 @@ public class AccountLoginTests {
         String expectedSignInButtonText = "Войти в аккаунт";
         String actualSignInButtonText = mainPage.signInButtonText();
         assertTrue(expectedSignInButtonText.contains(actualSignInButtonText));
-        Selenide.closeWebDriver();
     }
-
 }

@@ -1,37 +1,59 @@
+import api.client.UserClient;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import com.github.javafaker.Faker;
+import models.UserLoginRequest;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import ru.stellarburgers.nomoreparties.site.locators.LoginPage;
 import ru.stellarburgers.nomoreparties.site.locators.MainPage;
 import ru.stellarburgers.nomoreparties.site.locators.ProfilePage;
 import ru.stellarburgers.nomoreparties.site.locators.RegisterPage;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import static org.junit.Assert.assertTrue;
 
 public class RegisterTests {
 
+    private final MainPage mainPage = new MainPage();
+    private final LoginPage loginPage = new LoginPage();
+    private final RegisterPage registerPage = new RegisterPage();
+    private final ProfilePage profilePage = new ProfilePage();
+    private final UserClient userClient = new UserClient();
+    private String email;
+    private String password;
+    private String name;
+
+    @Before
+    public void configuration() {
+        Configuration.startMaximized = true;
+
+        Faker faker = new Faker();
+        name = faker.name().firstName();
+        email = faker.name().firstName() + "@mail.ru";
+        password = faker.internet().password();
+
+        Selenide.open(MainPage.URL);
+    }
+
+    @After
+    public void deleteUser() {
+        String token = userClient.userGetToken(new UserLoginRequest(email, password));
+        if (token != null && !token.equals("")) {
+            userClient.deleteUser(token);
+        }
+        Selenide.closeWebDriver();
+    }
+
     // Успешная регистрация
     @Test
     public void newUserRegisterShouldBeSuccess() {
         // Настройка запуска тестов в Яндекс.Браузере
 //        System.setProperty("webdriver.chrome.driver", "C:\\WebDriver\\bin\\yandexdriver.exe");
-        Configuration.startMaximized = true;
-        Selenide.open(MainPage.URL);
-
-        // Создаем объекты классов страниц
-        MainPage mainPage = new MainPage();
-        LoginPage loginPage = new LoginPage();
-        RegisterPage registerPage = new RegisterPage();
-        ProfilePage profilePage = new ProfilePage();
-
-        // Создаем тестового пользователя
-        Faker faker = new Faker();
-        String name = faker.name().firstName();
-        String email = faker.name().firstName() + "@mail.ru";
-        String password = faker.internet().password();
 
         // Создаем нового пользователя
         mainPage.signInButtonClick();
@@ -40,16 +62,16 @@ public class RegisterTests {
                 name,
                 email,
                 password);
+        registerPage.waitForLoadRegisterPage();
         registerPage.registerButtonClick();
-        Selenide.sleep(200);
 
         // Логинимся под новым пользователем
+        loginPage.waitForLoadLoginPage();
         loginPage.fillUserInfo(
                 email,
                 password);
         loginPage.signInButtonClick();
         mainPage.personalAreaButtonClick();
-        Selenide.sleep(2000);
 
         //Проверяем что данные в личном кабинете соответствуют тем, с которыми создавали пользователя
         String actualName = name;
@@ -58,7 +80,6 @@ public class RegisterTests {
         String expectedLogin = profilePage.getUserLoginFieldText();
         assertTrue(expectedName.contains(actualName));
         assertTrue(expectedLogin.contains(actualLogin));
-        Selenide.closeWebDriver();
     }
 
     // Проверка текста ошибки при вводе некорректного пароля при регистрации
@@ -66,19 +87,10 @@ public class RegisterTests {
     public void checkErrorMessageForInvalidPassword() {
         // Настройка запуска тестов в Яндекс.Браузере
 //        System.setProperty("webdriver.chrome.driver", "C:\\WebDriver\\bin\\yandexdriver.exe");
-        Configuration.startMaximized = true;
-        Selenide.open(MainPage.URL);
-
-        // Создаем объекты классов страниц
-        MainPage mainPage = new MainPage();
-        LoginPage loginPage = new LoginPage();
-        RegisterPage registerPage = new RegisterPage();
 
         // Создаем тестового пользователя с невалидным паролем
         Faker faker = new Faker();
-        String name = faker.name().firstName();
-        String email = faker.name().firstName() + "@mail.ru";
-        String invalidPassword = String.valueOf(faker.random().nextInt(5));
+        password = String.valueOf(faker.random().nextInt(5));
 
         // Создаем нового пользователя
         mainPage.signInButtonClick();
@@ -86,15 +98,12 @@ public class RegisterTests {
         registerPage.fillNewUserInfo(
                 name,
                 email,
-                invalidPassword);
-        Selenide.sleep(200);
+                password);
         registerPage.registerButtonClick();
-        Selenide.sleep(200);
 
         // Проверяем ошибку при вводе невалидного пароля
         String actualErrorMessage = "Некорректный пароль";
         String expectedErrorMessage = registerPage.getErrorMessageForInvalidPasswordText();
         assertTrue(expectedErrorMessage.contains(actualErrorMessage));
-        Selenide.closeWebDriver();
     }
 }
