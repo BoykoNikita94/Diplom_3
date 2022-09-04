@@ -26,7 +26,7 @@ public class MainPage {
     //Вкладка ассортимента начинок
     private SelenideElement fillingTab = $(byCssSelector("section.BurgerIngredients_ingredients__1N8v2 div:nth-child(2) div:nth-child(3)"));
 
-    private SelenideElement selectedCategory = $(byCssSelector(".tab_tab__1SPyG.tab_tab_type_current__2BEPc.pt-4.pr-10.pb-4.pl-10.noselect"));
+    private SelenideElement selectedCategory = $(byCssSelector(".tab_tab_type_current__2BEPc"));
 
     //Метод клика по кнопке входа в личный кабинет
     public void personalAreaButtonClick() {
@@ -61,20 +61,5 @@ public class MainPage {
     public SelenideElement getSelectedCategory() {
         return selectedCategory;
     }
-
-    // Метод получения заголовка начинок
-//    public SelenideElement fillingsName() {
-//        return fillingsHeader;
-//    }
-//
-//    // Метод получения заголовка соусов
-//    public SelenideElement saucesName() {
-//        return saucesHeader;
-//    }
-//
-//    // Метод получения заголовка булок
-//    public SelenideElement bunsName() {
-//        return bunsHeader;
-//    }
 
 }

@@ -2,15 +2,12 @@ import api.client.UserClient;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.SelenideElement;
 import com.github.javafaker.Faker;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import models.CreateUserRequest;
 import models.UserLoginRequest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.WebDriver;
 import ru.stellarburgers.nomoreparties.site.locators.*;
 
 import static org.junit.Assert.assertTrue;
@@ -19,7 +16,6 @@ public class ConstructorTests {
 
     private final MainPage mainPage = new MainPage();
     private final LoginPage loginPage = new LoginPage();
-    private final RegisterPage registerPage = new RegisterPage();
     private final ProfilePage profilePage = new ProfilePage();
     private final UserClient userClient = new UserClient();
     private String email;

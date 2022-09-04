@@ -21,15 +21,13 @@ public class UserClient{
     public UserClient() {
         RestAssured.requestSpecification = new RequestSpecBuilder()
                 .setBaseUri(BASE_URI)
-                .setContentType(ContentType.ANY)
+                .setContentType(ContentType.JSON)
                 .build();
     }
 
     @Step("Create user")
     public Response createUser(CreateUserRequest createUserRequest) {
         return given()
-                .header("Content-type", "application/json")
-                .and()
                 .body(createUserRequest)
                 .when()
                 .post(REGISTER_URI);
@@ -38,8 +36,6 @@ public class UserClient{
     @Step("User login")
     public String userGetToken(UserLoginRequest userLoginRequest) {
         return given()
-                .header("Content-type", "application/json")
-                .and()
                 .body(userLoginRequest)
                 .post(LOGIN_URI)
                 .then().extract().body().path("accessToken");
@@ -48,8 +44,6 @@ public class UserClient{
     @Step("Delete user")
     public void deleteUser(String token) {
         given()
-                .header("Content-type", "application/json")
-                .and()
                 .header("Authorization", token)
                 .when()
                 .delete(USER_URI)

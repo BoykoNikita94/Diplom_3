@@ -17,7 +17,6 @@ public class AccountLoginTests {
 
     private final MainPage mainPage = new MainPage();
     private final LoginPage loginPage = new LoginPage();
-    private final RegisterPage registerPage = new RegisterPage();
     private final ProfilePage profilePage = new ProfilePage();
     private final ForgotPasswordPage forgotPasswordPage = new ForgotPasswordPage();
     private final UserClient userClient = new UserClient();

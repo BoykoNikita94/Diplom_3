@@ -11,8 +11,6 @@ import ru.stellarburgers.nomoreparties.site.locators.MainPage;
 import ru.stellarburgers.nomoreparties.site.locators.ProfilePage;
 import ru.stellarburgers.nomoreparties.site.locators.RegisterPage;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import static org.junit.Assert.assertTrue;
